@@ -16,7 +16,7 @@ public class UserRegistration {
             .log(LogDetail.ALL)
             .build();
 
-    static void RegUser(DataGenerator.UserInfo user) {
+    static void regUser(DataGenerator.UserInfo user) {
         given()
                 .spec(requestSpec)
                 .body(user)

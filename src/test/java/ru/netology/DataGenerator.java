@@ -20,17 +20,6 @@ public class DataGenerator {
         return faker.name().lastName();
     }
 
-    public static String status(String status) {
-        if (status.equals("active")) {
-            return status;
-        }
-        if (status.equals("blocked")) {
-            return status;
-        } else {
-            return null;
-        }
-    }
-
     public static class Registration {
         private Registration() {
         }
