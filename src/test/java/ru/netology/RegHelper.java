@@ -7,7 +7,7 @@ import io.restassured.specification.RequestSpecification;
 
 import static io.restassured.RestAssured.given;
 
-public class UserRegistration {
+public class RegHelper {
     private static RequestSpecification requestSpec = new RequestSpecBuilder()
             .setBaseUri("http://localhost")
             .setPort(9999)
@@ -16,7 +16,7 @@ public class UserRegistration {
             .log(LogDetail.ALL)
             .build();
 
-    static void regUser(DataGenerator.UserInfo user) {
+    public static void regUser(DataGenerator.RegistrationDto user) {
         given()
                 .spec(requestSpec)
                 .body(user)

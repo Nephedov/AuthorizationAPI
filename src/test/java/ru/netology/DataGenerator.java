@@ -6,32 +6,42 @@ import lombok.val;
 
 import java.util.Locale;
 
+import static ru.netology.RegHelper.regUser;
+
 public class DataGenerator {
     private DataGenerator() {
     }
 
-    public static String generateLogin(String locale) {
-        Faker faker = new Faker(new Locale(locale));
-        return faker.name().firstName();
+    private static final Faker faker = new Faker(new Locale("ru"));
+
+    public static String getRandomLogin() {
+        String login = faker.name().firstName();
+        return login;
     }
 
-    public static String generatePassword(String locale) {
-        Faker faker = new Faker(new Locale(locale));
-        return faker.name().lastName();
+    public static String getRandomPassword() {
+        String password = faker.internet().password();
+        return password;
     }
 
     public static class Registration {
         private Registration() {
         }
 
-        public static UserInfo generateUser(String locale, String status) {
-            val user = new UserInfo(generateLogin(locale), generatePassword(locale), status);
+        public static RegistrationDto getUser(String status) {
+            val user = new RegistrationDto(getRandomLogin(), getRandomPassword(), status);
             return user;
+        }
+
+        public static RegistrationDto getRegisteredUser(String status) {
+            var registeredUser = getUser(status);
+            regUser(registeredUser);
+            return registeredUser;
         }
     }
 
     @Value
-    public static class UserInfo {
+    public static class RegistrationDto {
         String login;
         String password;
         String status;

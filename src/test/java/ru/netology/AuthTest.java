@@ -1,21 +1,28 @@
 package ru.netology;
 
 import com.codeborne.selenide.Condition;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
 
 import static com.codeborne.selenide.Selenide.*;
+import static ru.netology.DataGenerator.Registration.getRegisteredUser;
+import static ru.netology.DataGenerator.Registration.getUser;
+import static ru.netology.DataGenerator.getRandomLogin;
+import static ru.netology.DataGenerator.getRandomPassword;
 
 public class AuthTest {
+    @BeforeEach
+    void setup() {
+        open("http://localhost:9999/");
+    }
 
     @Test
     void positiveAuthorizationTest() {
-        DataGenerator.UserInfo user = DataGenerator.Registration.generateUser("ru", "active");
-        UserRegistration.regUser(user);
-        open("http://localhost:9999/");
-        $("[data-test-id='login'] input").setValue(user.getLogin());
-        $("[data-test-id='password'] input").setValue(user.getPassword());
+        var registeredUser = getRegisteredUser("active");
+        $("[data-test-id='login'] input").setValue(registeredUser.getLogin());
+        $("[data-test-id='password'] input").setValue(registeredUser.getPassword());
         $("[data-test-id='action-login']").click();
         $("h2").shouldBe(Condition.visible, Duration.ofSeconds(15))
                 .shouldHave(Condition.text("Личный кабинет"));
@@ -23,10 +30,9 @@ public class AuthTest {
 
     @Test
     void nonExistentUserTest() {
-        DataGenerator.UserInfo user = DataGenerator.Registration.generateUser("ru", "active");
-        open("http://localhost:9999/");
-        $("[data-test-id='login'] input").setValue(user.getLogin());
-        $("[data-test-id='password'] input").setValue(user.getPassword());
+        var unregisteredUser = getUser("active");
+        $("[data-test-id='login'] input").setValue(unregisteredUser.getLogin());
+        $("[data-test-id='password'] input").setValue(unregisteredUser.getPassword());
         $("[data-test-id='action-login']").click();
         $("[data-test-id='error-notification']").shouldBe(Condition.visible)
                 .shouldHave(Condition.text("Ошибка! Неверно указан логин или пароль"));
@@ -34,11 +40,9 @@ public class AuthTest {
 
     @Test
     void invalidLoginFieldTest() {
-        DataGenerator.UserInfo user = DataGenerator.Registration.generateUser("ru", "active");
-        UserRegistration.regUser(user);
-        open("http://localhost:9999/");
-        $("[data-test-id='login'] input").setValue("login");
-        $("[data-test-id='password'] input").setValue(user.getPassword());
+        var registeredUser = getRegisteredUser("active");
+        $("[data-test-id='login'] input").setValue(getRandomLogin());
+        $("[data-test-id='password'] input").setValue(registeredUser.getPassword());
         $("[data-test-id='action-login']").click();
         $("[data-test-id='error-notification']").shouldBe(Condition.visible)
                 .shouldHave(Condition.text("Ошибка! Неверно указан логин или пароль"));
@@ -46,11 +50,9 @@ public class AuthTest {
 
     @Test
     void invalidPasswordFieldTest() {
-        DataGenerator.UserInfo user = DataGenerator.Registration.generateUser("ru", "active");
-        UserRegistration.regUser(user);
-        open("http://localhost:9999/");
-        $("[data-test-id='login'] input").setValue(user.getLogin());
-        $("[data-test-id='password'] input").setValue("password");
+        var registeredUser = getRegisteredUser("active");
+        $("[data-test-id='login'] input").setValue(registeredUser.getLogin());
+        $("[data-test-id='password'] input").setValue(getRandomPassword());
         $("[data-test-id='action-login']").click();
         $("[data-test-id='error-notification']").shouldBe(Condition.visible)
                 .shouldHave(Condition.text("Ошибка! Неверно указан логин или пароль"));
@@ -58,11 +60,9 @@ public class AuthTest {
 
     @Test
     void blockedUserTest() {
-        DataGenerator.UserInfo user = DataGenerator.Registration.generateUser("ru", "blocked");
-        UserRegistration.regUser(user);
-        open("http://localhost:9999/");
-        $("[data-test-id='login'] input").setValue(user.getLogin());
-        $("[data-test-id='password'] input").setValue(user.getPassword());
+        var registeredUser = getRegisteredUser("blocked");
+        $("[data-test-id='login'] input").setValue(registeredUser.getLogin());
+        $("[data-test-id='password'] input").setValue(registeredUser.getPassword());
         $("[data-test-id='action-login']").click();
         $("[data-test-id='error-notification']").shouldBe(Condition.visible)
                 .shouldHave(Condition.text("Ошибка! Пользователь заблокирован"));
